@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented here.
 
+## v0.6.0
+
+### Added
+- Reader: Added a "tap edges to turn pages" toggle (Settings → Reader) for EPUB and image readers — tap the left/right third of the screen to go to the previous/next page.
+- Reader: Added Merriweather as a selectable reader font.
+
 ## v0.5.0
 
 ### Changed
