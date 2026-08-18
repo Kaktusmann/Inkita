@@ -53,6 +53,7 @@ object EpubReader : BaseReader {
             serverUrl = params.serverUrl,
             apiKey = params.apiKey,
             onToggleOverlay = callbacks.onToggleOverlay,
+            tapZonesEnabled = params.tapZonesEnabled,
             pendingScrollY = params.pendingScrollY,
             onConsumePendingScroll = callbacks.onConsumePendingScroll,
             onWebViewReady = callbacks.onWebViewReady,

@@ -10,6 +10,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -86,7 +87,28 @@ object ImageReader : BaseReader {
                                 onDragCancel = { totalDrag = 0f },
                             )
                         }
-                    }.clickable { callbacks.onToggleOverlay() },
+                    }.then(
+                        if (params.tapZonesEnabled) {
+                            Modifier.pointerInput(params.uiState.pageIndex, isRtl, isVertical) {
+                                detectTapGestures { offset ->
+                                    val edgeFraction = 1f / 3f
+                                    val zone =
+                                        if (isVertical) {
+                                            offset.y / size.height
+                                        } else {
+                                            offset.x / size.width
+                                        }
+                                    when {
+                                        zone < edgeFraction -> if (isRtl) callbacks.onSwipeNext() else callbacks.onSwipePrev()
+                                        zone > 1f - edgeFraction -> if (isRtl) callbacks.onSwipePrev() else callbacks.onSwipeNext()
+                                        else -> callbacks.onToggleOverlay()
+                                    }
+                                }
+                            }
+                        } else {
+                            Modifier.clickable { callbacks.onToggleOverlay() }
+                        },
+                    ),
             contentAlignment = Alignment.Center,
         ) {
             if (imageUrl.isNullOrBlank()) {

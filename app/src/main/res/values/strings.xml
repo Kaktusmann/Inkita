@@ -265,6 +265,8 @@
     <string name="reader_mark_chapter_read_skip">Continue without marking</string>
     <string name="reader_font_selection">Select font</string>
     <string name="reader_settings_general_section">General</string>
+    <string name="reader_tap_zones">Tap edges to turn pages</string>
+    <string name="reader_tap_zones_subtitle">Tap the left or right edge of the screen to go to the previous or next page</string>
     <string name="reader_settings_image_section">Image reader</string>
     <string name="reader_image_default_mode">Default reading mode</string>
     <string name="reader_image_default_mode_subtitle">Used for Image and Archive chapters</string>

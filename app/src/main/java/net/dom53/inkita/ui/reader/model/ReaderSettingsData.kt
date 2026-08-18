@@ -30,6 +30,13 @@ val readerFontOptions =
         ReaderFontOption("open_sans", "Open Sans", "Open Sans", "file:///android_asset/fonts/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf", isSerif = false),
         ReaderFontOption("nunito", "Nunito", "Nunito", "file:///android_asset/fonts/Nunito/Nunito-VariableFont_wght.ttf", isSerif = false),
         ReaderFontOption("bitter", "Bitter", "Bitter", "file:///android_asset/fonts/Bitter/Bitter-VariableFont_wght.ttf", isSerif = true),
+        ReaderFontOption(
+            "merriweather",
+            "Merriweather",
+            "Merriweather",
+            "file:///android_asset/fonts/Merriweather/Merriweather-VariableFont_opsz,wdth,wght.ttf",
+            isSerif = true,
+        ),
         ReaderFontOption("ubuntu", "Ubuntu", "Ubuntu", "file:///android_asset/fonts/Ubuntu/Ubuntu-Regular.ttf", isSerif = false),
         ReaderFontOption("system_sans", "System Sans", "sans-serif", assetPath = null, isSerif = false),
         ReaderFontOption("system_serif", "System Serif", "serif", assetPath = null, isSerif = true),

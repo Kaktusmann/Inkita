@@ -346,6 +346,7 @@ internal fun BaseReaderScreen(
                     pendingScrollY = pendingScrollY,
                     pendingScrollId = uiState.bookScrollId,
                     imageReaderMode = readerPrefs.imageReaderMode,
+                    tapZonesEnabled = readerPrefs.tapZonesEnabled,
                 ),
             callbacks =
                 ReaderRenderCallbacks(
@@ -1095,6 +1096,7 @@ internal fun ReaderWebView(
     pendingScrollId: String? = null,
     onConsumeScrollId: () -> Unit = {},
     onScrollIdle: (String?) -> Unit = {},
+    tapZonesEnabled: Boolean = false,
 ) {
     if (html.isBlank()) return
     var lastLoadedHash by remember { mutableStateOf<String?>(null) }
@@ -1225,12 +1227,23 @@ internal fun ReaderWebView(
         factory = { context ->
             val swipeThreshold = 120
             val swipeVelocityThreshold = 200
+            var touchViewWidthPx = 0
             val gestureDetector =
                 GestureDetector(
                     context,
                     object : GestureDetector.SimpleOnGestureListener() {
                         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                            onToggleOverlay()
+                            if (tapZonesEnabled && touchViewWidthPx > 0) {
+                                val edgeFraction = 1f / 3f
+                                val zone = e.x / touchViewWidthPx
+                                when {
+                                    zone < edgeFraction -> onSwipePrev()
+                                    zone > 1f - edgeFraction -> onSwipeNext()
+                                    else -> onToggleOverlay()
+                                }
+                            } else {
+                                onToggleOverlay()
+                            }
                             return true
                         }
 
@@ -1280,7 +1293,8 @@ internal fun ReaderWebView(
                             }
                         }
                     }
-                setOnTouchListener { _, event ->
+                setOnTouchListener { view, event ->
+                    touchViewWidthPx = view.width
                     gestureDetector.onTouchEvent(event)
                     false
                 }

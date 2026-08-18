@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -79,6 +80,7 @@ fun SettingsReaderScreen(
     var showImageModeDialog by remember { mutableStateOf(false) }
     var imagePrefetchPages by remember { mutableStateOf(prefs.imagePrefetchPages) }
     var showImagePrefetchDialog by remember { mutableStateOf(false) }
+    var tapZonesEnabled by remember { mutableStateOf(prefs.tapZonesEnabled) }
 
     LaunchedEffect(prefs) {
         fontSize = prefs.fontSize
@@ -89,6 +91,7 @@ fun SettingsReaderScreen(
         themeMode = prefs.readerTheme
         imageReaderMode = prefs.imageReaderMode
         imagePrefetchPages = prefs.imagePrefetchPages
+        tapZonesEnabled = prefs.tapZonesEnabled
     }
 
     Column(
@@ -107,6 +110,13 @@ fun SettingsReaderScreen(
         )
 
         Text(stringResource(R.string.reader_settings_general_section), style = MaterialTheme.typography.titleMedium)
+        TapZonesRow(
+            enabled = tapZonesEnabled,
+            onCheckedChange = { checked ->
+                tapZonesEnabled = checked
+                scope.launch { appPreferences.updateReaderPrefs { copy(tapZonesEnabled = checked) } }
+            },
+        )
         HorizontalDivider()
 
         Text(stringResource(R.string.reader_settings_image_section), style = MaterialTheme.typography.titleMedium)
@@ -291,6 +301,31 @@ private fun StepperRow(
             Text(valueText, style = MaterialTheme.typography.bodyMedium)
             IconButton(onClick = { onDelta(1f) }) { Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.general_increase)) }
         }
+    }
+}
+
+@Composable
+private fun TapZonesRow(
+    enabled: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(stringResource(R.string.reader_tap_zones), style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = stringResource(R.string.reader_tap_zones_subtitle),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(checked = enabled, onCheckedChange = onCheckedChange)
     }
 }
 
