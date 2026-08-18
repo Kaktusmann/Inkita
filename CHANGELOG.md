@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented here.
 
+## v0.4.2
+
+### Fixed
+- Reader: Fixed scroll-position tracking always resolving to the top of the chapter, causing progress to reset to the beginning when resuming in the app.
+- Reader: Progress writes to the server now correctly report failure instead of silently swallowing rejected requests.
+- Settings: Fixed a crash when opening the About screen while an update download was pending (missing receiver-exported flag on Android 13+).
+- Settings: Fixed the update checker always reporting "up to date" due to a broken version-parsing regex.
+
 ## v0.4.1
 
 ### Fixed
