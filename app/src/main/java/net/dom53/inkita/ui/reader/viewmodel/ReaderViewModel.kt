@@ -135,7 +135,7 @@ abstract class BaseReaderViewModel(
                 .onSuccess { result ->
                     applyLoadResult(result, initialPage)
                     if (reader.format != Format.Pdf) {
-                        updateProgress(initialPage)
+                        updateProgress(initialPage, bookScrollId = _state.value.bookScrollId)
                     }
                 }.onFailure { e ->
                     _state.update { it.copy(isLoading = false, error = e.message ?: "Error loading reader") }

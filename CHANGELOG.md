@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented here.
 
+## v0.4.1
+
+### Fixed
+- Reader: Opening a chapter in the app no longer erases the saved scroll position on the server, fixing progress sync when resuming from the app.
+
 ## v0.4.0
 
 ### Fixed
