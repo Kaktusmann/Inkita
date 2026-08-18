@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.flow.first
 import net.dom53.inkita.core.downloadv2.DownloadPaths
+import net.dom53.inkita.core.logging.LoggingManager
 import net.dom53.inkita.core.network.KavitaApiFactory
 import net.dom53.inkita.core.network.NetworkMonitor
 import net.dom53.inkita.core.storage.AppPreferences
@@ -188,6 +189,11 @@ class ReaderRepositoryImpl(
             }
 
         latest?.let { readerDao.upsertLocalProgress(it.toEntity()) }
+        LoggingManager.d(
+            "ReaderProgress",
+            "getProgress chapterId=$chapterId local=${local?.bookScrollId}@${local?.lastModifiedUtcMillis} " +
+                "remote=${remote?.bookScrollId}@${remote?.lastModifiedUtcMillis} chosen=${latest?.bookScrollId}",
+        )
         return latest
     }
 
@@ -210,12 +216,18 @@ class ReaderRepositoryImpl(
 
         runCatching {
             val api = apiOrThrow()
-            api.setReaderProgress(progressWithTs.toDto())
-        }.onFailure {
-            // fallback to local cache if network fails
+            val resp = api.setReaderProgress(progressWithTs.toDto())
+            check(resp.isSuccessful) { "HTTP ${resp.code()}" }
+        }.onFailure { e ->
+            LoggingManager.w("ReaderProgress", "setProgress chapterId=${progressWithTs.chapterId} failed, queuing for sync", e)
+            // fallback to local cache if the server rejected the write or the network failed
             readerDao.upsertLocalProgress(progressWithTs.toEntity())
             ProgressSyncWorker.enqueue(context)
         }.onSuccess {
+            LoggingManager.d(
+                "ReaderProgress",
+                "setProgress chapterId=${progressWithTs.chapterId} bookScrollId=${progressWithTs.bookScrollId} ok",
+            )
             readerDao.upsertLocalProgress(progressWithTs.toEntity())
         }
 

@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.dom53.inkita.core.logging.LoggingManager
 import net.dom53.inkita.domain.model.Format
 import net.dom53.inkita.domain.model.ReaderBookInfo
 import net.dom53.inkita.domain.model.ReaderChapterNav
@@ -114,6 +115,7 @@ abstract class BaseReaderViewModel(
                     libraryId = info?.libraryId,
                 )
             val totalPages = totalPagesOverride ?: info?.pages
+            LoggingManager.d("ReaderProgress", "updateProgress chapterId=$chapterId page=$pageIndex bookScrollId=$bookScrollId")
             runCatching { reader.setProgress(progress, totalPages = totalPages) }
             _state.update { it.copy(bookScrollId = bookScrollId) }
             loadTimeLeft()

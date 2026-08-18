@@ -173,7 +173,12 @@ fun SettingsAboutScreen(onBack: () -> Unit) {
                     }
                 }
             }
-        context.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        androidx.core.content.ContextCompat.registerReceiver(
+            context,
+            receiver,
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+            androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
         onDispose { context.unregisterReceiver(receiver) }
     }
     val onCheckUpdates: () -> Unit = onCheckUpdates@{
