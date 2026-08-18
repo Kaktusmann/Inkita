@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://github.com/dom-53/Inkita">
+<a href="https://github.com/Kaktusmann/Inkita">
     <img src="./.github/assets/inkita-logo.png" alt="Inkita logo" title="Inkita logo" width="80"/>
 </a>
 
@@ -8,14 +8,14 @@
 
  Unofficial Android reader for your self-hosted **Kavita** library.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/dom-53/Inkita/release.yml?labelColor=27303D)](https://github.com/dom-53/Inkita/actions/workflows/release.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/Kaktusmann/Inkita/release.yml?labelColor=27303D)](https://github.com/Kaktusmann/Inkita/actions/workflows/release.yml)
 ![Platform](https://img.shields.io/badge/platform-Android-blue)
 ![Kavita](https://img.shields.io/badge/Kavita-nightly_0.8.8.15-orange)
 
 <br>
 
-[//]: # ([![Inkita Stable]&#40;https://img.shields.io/github/release/dom-53/Inkita.svg?maxAge=3600&label=Stable&labelColor=06599d&color=043b69&#41;]&#40;https://github.com/dom-53/Inkita/releases&#41;)
-[![Inkita Preview](https://img.shields.io/github/v/release/dom-53/Inkita.svg?maxAge=3600&label=Preview&labelColor=2c2c47&color=1c1c39&include_prereleases)](https://github.com/dom-53/Inkita/releases)
+[//]: # ([![Inkita Stable]&#40;https://img.shields.io/github/release/Kaktusmann/Inkita.svg?maxAge=3600&label=Stable&labelColor=06599d&color=043b69&#41;]&#40;https://github.com/Kaktusmann/Inkita/releases&#41;)
+[![Inkita Preview](https://img.shields.io/github/v/release/Kaktusmann/Inkita.svg?maxAge=3600&label=Preview&labelColor=2c2c47&color=1c1c39&include_prereleases)](https://github.com/Kaktusmann/Inkita/releases)
 
 
 </div>
@@ -26,13 +26,15 @@
 
 Inkita is a Kotlin/Jetpack Compose Android app to browse and read from your Kavita server. It aims for fast navigation, a clean reader, and tight API integration (collections, progress, metadata).
 
+This is a fork of the original [dom-53/Inkita](https://github.com/dom-53/Inkita) project, maintained here because the upstream app hasn't been updated in 8 months.
+
 **Tech:** Kotlin, Jetpack Compose (Material 3), Retrofit/OkHttp, WorkManager, Room/DataStore.
 **Formats:** EPUB (primary); other formats planned.
 **Status:** Preview (0.x); APIs and UI may change.
 
 <div align="center">
 
-<a href="https://github.com/dom-53/Inkita/blob/master/.github/assets/inkita-prew.png">
+<a href="https://github.com/Kaktusmann/Inkita/blob/master/.github/assets/inkita-prew.png">
     <img src="./.github/assets/inkita-prew.png" alt="Inkita logo" title="Inkita logo" width="160"/>
 </a>
 
@@ -53,8 +55,8 @@ Inkita is a Kotlin/Jetpack Compose Android app to browse and read from your Kavi
 
 ## Download
 
-- **Preview** (alpha/beta): universal APKs are published in [Releases](https://github.com/dom-53/Inkita/releases).
-- **Update feed:** `https://dom-53.github.io/Inkita/updates.json` (app uses it for update checks).
+- **Preview** (alpha/beta): universal APKs are published in [Releases](https://github.com/Kaktusmann/Inkita/releases).
+- **Update feed:** `https://kaktusmann.github.io/Inkita/updates.json` (app uses it for update checks).
 - **Stable:** not published yet (0.x).
 
 ---
@@ -97,12 +99,6 @@ Contributions are welcome (bugfixes, UX polish, docs). Please:
 - You can export or save anonymized logs from **Settings → Advanced → Logs**; saved zips are written to `Documents/Inkita/logs`.
 - Sensitive data (host/IP/API key) is anonymized in log files and exports.
 - For bug reports: enable **Verbose logging**, reproduce the issue, then attach the exported ZIP to your issue/report.
-
----
-
-## Support
-
-If you find Inkita useful, you can support development on Ko-fi: https://ko-fi.com/dom53
 
 ---
 

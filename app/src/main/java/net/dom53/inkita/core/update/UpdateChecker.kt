@@ -18,7 +18,7 @@ import java.net.URL
 
 /** Lightweight update checker used at app startup. */
 object UpdateChecker {
-    private const val UPDATES_URL = "https://dom-53.github.io/Inkita/updates.json"
+    private const val UPDATES_URL = "https://kaktusmann.github.io/Inkita/updates.json"
     private const val NOTIFICATION_ID = 2001
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)

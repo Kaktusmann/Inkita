@@ -21,7 +21,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.Update
@@ -184,7 +183,7 @@ fun SettingsAboutScreen(onBack: () -> Unit) {
             val message =
                 withContext(Dispatchers.IO) {
                     try {
-                        val url = URL("https://dom-53.github.io/Inkita/updates.json")
+                        val url = URL("https://kaktusmann.github.io/Inkita/updates.json")
                         val conn =
                             (url.openConnection() as HttpURLConnection).apply {
                                 connectTimeout = 5000
@@ -298,7 +297,7 @@ fun SettingsAboutScreen(onBack: () -> Unit) {
             leadingContent = { Icon(Icons.Filled.Update, contentDescription = null, modifier = Modifier.size(24.dp)) },
             modifier =
                 Modifier
-                    .clickable { openUrl("https://github.com/dom-53/Inkita/blob/develop/CHANGELOG.md") }
+                    .clickable { openUrl("https://github.com/Kaktusmann/Inkita/blob/master/CHANGELOG.md") }
                     .padding(vertical = 2.dp),
         )
 
@@ -336,25 +335,11 @@ fun SettingsAboutScreen(onBack: () -> Unit) {
             },
             modifier =
                 Modifier
-                    .clickable { openUrl("https://github.com/dom-53/Inkita") }
+                    .clickable { openUrl("https://github.com/Kaktusmann/Inkita") }
                     .padding(vertical = 2.dp),
         )
 
         Text(stringResource(R.string.settings_about_label_contribute), style = MaterialTheme.typography.titleMedium)
-        ListItem(
-            headlineContent = { Text(stringResource(R.string.settings_about_kofi)) },
-            leadingContent = {
-                Icon(
-                    Icons.Filled.Favorite,
-                    contentDescription = stringResource(R.string.settings_about_kofi),
-                    modifier = Modifier.size(24.dp),
-                )
-            },
-            modifier =
-                Modifier
-                    .clickable { openUrl("https://ko-fi.com/dom53") }
-                    .padding(vertical = 2.dp),
-        )
         ListItem(
             headlineContent = { Text("Help translate") },
             leadingContent = {

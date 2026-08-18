@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented here.
 
+## v0.4.0
+
+### Fixed
+- Reader: EPUB reading progress now syncs correctly with the Kavita web reader.
+- History: Reading history entries display correctly again.
+- Reader: Fixed a scroll jump when turning chapters.
+
 ## v0.3.1-beta
 
 ### Added

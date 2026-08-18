@@ -383,7 +383,6 @@
     <string name="settings_about_label_community">Community</string>
     <string name="settings_about_label_contribute">Contribute</string>
     <string name="settings_about_help_transalate">Help translate</string>
-    <string name="settings_about_kofi">Support on Ko-fi</string>
     <string name="settings_about_osl">Open source licenses</string>
     <string name="settings_about_osl_3rd">Third-party libraries</string>
     <string name="settings_about_license">License</string>

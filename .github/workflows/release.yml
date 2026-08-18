@@ -164,7 +164,7 @@ jobs:
             "channel": "${CHANNEL}",
             "version": "${VERSION_NAME}",
             "versionCode": ${VERSION_CODE},
-            "url": "https://github.com/dom-53/Inkita/releases/download/${TAG}/inkita-universal-v${VERSION_NAME}.apk",
+            "url": "https://github.com/Kaktusmann/Inkita/releases/download/${TAG}/inkita-universal-v${VERSION_NAME}.apk",
             "sha256": "${SHA}"
           }
           EOF

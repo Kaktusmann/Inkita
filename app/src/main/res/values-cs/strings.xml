@@ -386,7 +386,6 @@
     <string name="settings_about_label_community">Komunita</string>
     <string name="settings_about_label_contribute">Přispět</string>
     <string name="settings_about_help_transalate">Pomoc přeložit</string>
-    <string name="settings_about_kofi">Podpořit na Ko-fi</string>
     <string name="settings_about_check_updates">Zkontrolovat aktualizace</string>
     <string name="settings_about_update_available">Je k dispozici aktualizace: %1$s</string>
     <string name="settings_about_up_to_date">Máte aktuální verzi</string>
