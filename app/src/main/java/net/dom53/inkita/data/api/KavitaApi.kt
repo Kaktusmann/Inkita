@@ -284,10 +284,10 @@ interface KavitaApi {
     @GET("api/Account")
     suspend fun getAccount(): Response<net.dom53.inkita.data.api.dto.UserDto>
 
-    @GET("api/Stats/user/reading-history")
+    @GET("api/Stats/reading-history")
     suspend fun getReadingHistory(
-        @Query("userId") userId: Int? = null,
-    ): Response<List<net.dom53.inkita.data.api.dto.ReadHistoryEventDto>>
+        @Query("libraries") libraries: List<Int>,
+    ): Response<List<net.dom53.inkita.data.api.dto.ReadingHistoryItemDto>>
 
     @GET("api/Book/{chapterId}/book-page")
     suspend fun getBookPage(

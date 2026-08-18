@@ -41,7 +41,7 @@ import net.dom53.inkita.core.network.KavitaApiFactory
 import net.dom53.inkita.core.network.NetworkUtils
 import net.dom53.inkita.core.storage.AppConfig
 import net.dom53.inkita.core.storage.AppPreferences
-import net.dom53.inkita.data.api.dto.ReadHistoryEventDto
+import net.dom53.inkita.data.api.dto.ReadingHistoryItemDto
 import net.dom53.inkita.ui.common.seriesCoverUrl
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -55,7 +55,7 @@ fun HistoryScreen(appPreferences: AppPreferences) {
     )
     val isLoading = remember { mutableStateOf(true) }
     val error = remember { mutableStateOf<String?>(null) }
-    val history = remember { mutableStateOf<List<ReadHistoryEventDto>>(emptyList()) }
+    val history = remember { mutableStateOf<List<ReadingHistoryItemDto>>(emptyList()) }
     val context = LocalContext.current
 
     LaunchedEffect(config.serverUrl, config.apiKey) {
@@ -72,18 +72,15 @@ fun HistoryScreen(appPreferences: AppPreferences) {
         isLoading.value = true
         error.value = null
         val api = KavitaApiFactory.createAuthenticated(config.serverUrl, config.apiKey)
-        val userIdToUse =
-            if (config.userId > 0) {
-                config.userId
-            } else {
-                val acc = runCatching { api.getAccount() }.getOrNull()
-                val accId = acc?.body()?.id ?: 0
-                if (accId > 0) {
-                    appPreferences.updateUserId(accId)
-                }
-                accId
-            }
-        runCatching { api.getReadingHistory(userId = userIdToUse) }
+        // The server-side stats filter matches nothing if no library ids are supplied, so we
+        // have to explicitly pass every library the user can see.
+        val libraryIds =
+            runCatching { api.getLibrariesFilter() }
+                .getOrNull()
+                ?.body()
+                .orEmpty()
+                .map { it.id }
+        runCatching { api.getReadingHistory(libraries = libraryIds) }
             .onSuccess { resp ->
                 if (resp.isSuccessful) {
                     history.value = resp.body().orEmpty()
@@ -94,11 +91,10 @@ fun HistoryScreen(appPreferences: AppPreferences) {
         isLoading.value = false
     }
 
-    val withDate: List<Pair<LocalDate?, ReadHistoryEventDto>> =
-        history.value.map { evt ->
-            val rawDate = evt.readDate ?: evt.readDateUtc
-            val date = rawDate?.take(10)?.let { v -> runCatching { LocalDate.parse(v) }.getOrNull() }
-            date to evt
+    val withDate: List<Pair<LocalDate?, ReadingHistoryItemDto>> =
+        history.value.map { session ->
+            val date = session.localDate?.take(10)?.let { v -> runCatching { LocalDate.parse(v) }.getOrNull() }
+            date to session
         }
     val groupedByDate: Map<LocalDate?, List<DaySeriesItem>> =
         withDate
@@ -107,18 +103,18 @@ fun HistoryScreen(appPreferences: AppPreferences) {
                 list
                     .groupBy { it.second.seriesId ?: it.second.seriesName ?: it.hashCode() }
                     .values
-                    .map { events ->
-                        val sorted = events.sortedBy { it.second.readDate ?: it.second.readDateUtc ?: "" }
-                        val first = sorted.first().second
-                        val last = sorted.last().second
+                    .map { sessions ->
+                        val last = sessions.last().second
+                        val chapters = sessions.flatMap { it.second.chapters.orEmpty() }
+                        val sortedChapters = chapters.sortedBy { it.startTimeUtc ?: "" }
                         DaySeriesItem(
                             seriesId = last.seriesId,
                             seriesName = last.seriesName.orEmpty(),
-                            chapterStart = first.chapterNumber,
-                            chapterEnd = last.chapterNumber,
-                            count = events.size,
-                            timeStart = first.readDate ?: first.readDateUtc,
-                            timeEnd = last.readDate ?: last.readDateUtc,
+                            chapterStart = sortedChapters.firstOrNull()?.label,
+                            chapterEnd = sortedChapters.lastOrNull()?.label,
+                            count = chapters.size,
+                            timeStart = sessions.minOfOrNull { it.second.startTimeUtc ?: "" },
+                            timeEnd = sessions.maxOfOrNull { it.second.endTimeUtc ?: "" },
                         )
                     }
             }
@@ -245,12 +241,8 @@ private fun HistoryRow(
             val chapterRange =
                 when {
                     item.chapterStart != null && item.chapterEnd != null && item.chapterStart != item.chapterEnd ->
-                        stringResource(
-                            R.string.history_chapter_range,
-                            chapterLabel(item.chapterStart),
-                            chapterLabel(item.chapterEnd),
-                        )
-                    item.chapterEnd != null -> stringResource(R.string.history_chapter_single, chapterLabel(item.chapterEnd))
+                        stringResource(R.string.history_chapter_range, item.chapterStart, item.chapterEnd)
+                    item.chapterEnd != null -> stringResource(R.string.history_chapter_single, item.chapterEnd)
                     else -> null
                 }
             chapterRange?.let {
@@ -278,8 +270,6 @@ private fun dayLabel(
     }
 }
 
-private fun chapterLabel(num: Float): String = if (num % 1f == 0f) num.toInt().toString() else String.format(Locale.getDefault(), "%.1f", num)
-
 @Suppress("UnusedPrivateProperty")
 private fun formatTimeRange(
     start: String?,
@@ -299,8 +289,8 @@ private fun formatTimeRange(
 private data class DaySeriesItem(
     val seriesId: Int?,
     val seriesName: String,
-    val chapterStart: Float?,
-    val chapterEnd: Float?,
+    val chapterStart: String?,
+    val chapterEnd: String?,
     val count: Int,
     val timeStart: String?,
     val timeEnd: String?,

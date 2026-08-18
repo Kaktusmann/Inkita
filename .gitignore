@@ -251,3 +251,5 @@ hs_err_pid*
 openapi.json
 /keystore.b64
 /app/src/main/java/net/dom53/inkita/data/kavita-openapi.json
+
+.claude

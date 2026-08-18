@@ -200,7 +200,6 @@ internal fun BaseReaderScreen(
         onBack(chapterId, uiState.pageIndex, sid, vid)
     }
     var pendingScrollY by remember { mutableStateOf<Int?>(null) }
-    var pendingScrollId by remember { mutableStateOf<String?>(null) }
     val readerPrefs by appPreferences.readerPrefsFlow.collectAsState(initial = ReaderPrefs())
     val fontOptions = remember { readerFontOptions }
 
@@ -227,10 +226,6 @@ internal fun BaseReaderScreen(
         fontFamilyId = readerPrefs.fontFamily
         themeMode = readerPrefs.readerTheme
     }
-    LaunchedEffect(uiState.bookScrollId) {
-        pendingScrollId = uiState.bookScrollId
-    }
-
     DisposableEffect(activity) {
         var controller: WindowInsetsControllerCompat? = null
         val window = activity?.window
@@ -349,7 +344,7 @@ internal fun BaseReaderScreen(
                     textAlign = textAlign,
                     themeMode = themeMode,
                     pendingScrollY = pendingScrollY,
-                    pendingScrollId = pendingScrollId,
+                    pendingScrollId = uiState.bookScrollId,
                     imageReaderMode = readerPrefs.imageReaderMode,
                 ),
             callbacks =
@@ -364,7 +359,7 @@ internal fun BaseReaderScreen(
                     onSwipeNext = { goNextPage() },
                     onSwipePrev = { goPrevPage() },
                     onConsumePendingScroll = { pendingScrollY = null },
-                    onConsumeScrollId = { pendingScrollId = null },
+                    onConsumeScrollId = {},
                     onWebViewReady = { webViewRef.value = it },
                     onScrollIdle = { scrollId -> readerViewModel.markProgressAtCurrentPage(scrollId) },
                     onPdfPageChanged = { idx, count ->
@@ -1173,6 +1168,27 @@ internal fun ReaderWebView(
         remember {
             """
         (function() {
+            function xpathFor(el) {
+                var root = (document.body.children && document.body.children.length > 0) ? document.body.children[0] : document.body;
+                var parts = [];
+                var node = el;
+                while (node && node.nodeType === 1) {
+                    if (node.id) return 'id("' + node.id + '")';
+                    if (node === root) {
+                        return parts.length ? '//body/' + parts.join('/') : '//body';
+                    }
+                    if (!node.parentElement) break;
+                    var siblingIndex = 1;
+                    var siblings = node.parentElement.children;
+                    for (var i = 0; i < siblings.length; i++) {
+                        if (siblings[i] === node) break;
+                        if (siblings[i].tagName === node.tagName) siblingIndex++;
+                    }
+                    parts.unshift(node.tagName.toLowerCase() + '[' + siblingIndex + ']');
+                    node = node.parentElement;
+                }
+                return '//body';
+            }
             var raw = Array.prototype.slice.call(document.querySelectorAll('body *'));
             var elems = [];
             for (var i = 0; i < raw.length; i++) {
@@ -1199,8 +1215,7 @@ internal fun ReaderWebView(
             }
             var best = elems[bestIdx];
             if (!best) return null;
-            if (best.id) return 'id(\"' + best.id + '\")';
-            return 'idx:' + bestIdx;
+            return xpathFor(best);
         })();
         """
         }
@@ -1309,42 +1324,29 @@ internal fun ReaderWebView(
                     null,
                 )
                 pendingScrollId?.let { id ->
-                    val isIdx = id.startsWith("idx:")
+                    val escapedXPath = id.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n")
                     val targetJs =
-                        if (isIdx) {
-                            val idx = id.removePrefix("idx:").toIntOrNull() ?: -1
-                            """
-                            (function() {
-                                var elems = document.querySelectorAll('body *');
-                                if ($idx >= 0 && $idx < elems.length) {
-                                    var el = elems[$idx];
+                        """
+                        (function() {
+                            try {
+                                var raw = "$escapedXPath";
+                                var el = null;
+                                if (raw.indexOf('//body') === 0) {
+                                    var root = (document.body.children && document.body.children.length > 0) ? document.body.children[0] : document.body;
+                                    var rel = raw.substring('//body'.length).replace(/^\//, '');
+                                    el = rel === '' ? root : document.evaluate(rel, root, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                                } else {
+                                    el = document.evaluate(raw, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                                }
+                                if (el && el.nodeType === 1) {
                                     var top = el.getBoundingClientRect().top + window.pageYOffset;
                                     window.scrollTo(0, top);
                                     return true;
                                 }
-                                return false;
-                            })();
-                            """.trimIndent()
-                        } else {
-                            val clean =
-                                id
-                                    .removePrefix("id(\"")
-                                    .removeSuffix("\")")
-                                    .removePrefix("id('")
-                                    .removeSuffix("')")
-                            """
-                            (function() {
-                                var el = document.getElementById("$clean");
-                                if (el) {
-                                    var top = el.getBoundingClientRect().top + window.pageYOffset;
-                                    window.scrollTo(0, top);
-                                    return true;
-                                }
-                                return false;
-                            })();
-                            """.trimIndent()
-                            // Todo: musí se to dělat přes js?
-                        }
+                            } catch (e) {}
+                            return false;
+                        })();
+                        """.trimIndent()
                     webView.postDelayed({
                         webView.evaluateJavascript(targetJs, null)
                         onConsumeScrollId()

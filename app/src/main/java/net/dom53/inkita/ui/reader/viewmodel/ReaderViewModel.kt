@@ -71,7 +71,7 @@ abstract class BaseReaderViewModel(
             _state.update { it.copy(isLoading = true, error = null) }
             runCatching { reader.loadPage(chapterId, index) }
                 .onSuccess { result ->
-                    applyLoadResult(result, index)
+                    applyLoadResult(result, index, resetScrollId = true)
                     updateProgress(index)
                     if (_state.value.bookInfo?.pages == null) {
                         val info = runCatching { reader.getBookInfo(chapterId) }.getOrNull()
@@ -115,7 +115,7 @@ abstract class BaseReaderViewModel(
                 )
             val totalPages = totalPagesOverride ?: info?.pages
             runCatching { reader.setProgress(progress, totalPages = totalPages) }
-            _state.update { it.copy(bookScrollId = bookScrollId ?: it.bookScrollId) }
+            _state.update { it.copy(bookScrollId = bookScrollId) }
             loadTimeLeft()
         }
     }
@@ -201,6 +201,7 @@ abstract class BaseReaderViewModel(
     protected fun applyLoadResult(
         result: ReaderLoadResult,
         pageIndex: Int,
+        resetScrollId: Boolean = false,
     ) {
         _state.update {
             it.copy(
@@ -211,6 +212,7 @@ abstract class BaseReaderViewModel(
                 error = null,
                 pdfPath = result.pdfPath ?: it.pdfPath,
                 imageUrl = result.imageUrl ?: it.imageUrl,
+                bookScrollId = if (resetScrollId) null else it.bookScrollId,
             )
         }
     }
