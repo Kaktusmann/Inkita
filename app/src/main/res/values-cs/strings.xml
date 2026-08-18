@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Inkita</string>
+    <string name="app_name">Inkikak</string>
     <string name="general_back">Zpět</string>
     <string name="will_be_implemented">Tato sekce bude doplněna.</string>
     <string name="general_error">Chyba</string>

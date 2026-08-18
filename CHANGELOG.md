@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented here.
 
+## v0.5.0
+
+### Changed
+- Rebrand: App renamed to "Inkikak" with a new applicationId (`net.kaktusmann.inkita`), following upstream's fork guidelines to avoid confusion and install conflicts with the original dom-53/Inkita app.
+- Rebrand: Launcher icon recolored from green to blue.
+- Debug builds now use a distinct applicationId (`net.kaktusmann.inkita.debug`) so a debug build can be installed alongside a release/preview build instead of conflicting with it.
+- Startup "what's new" dialog now shows the actual current release notes instead of stale content left over from an earlier version.
+
 ## v0.4.2
 
 ### Fixed

@@ -131,49 +131,22 @@ class MainActivity : AppCompatActivity() {
 }
 
 private const val IMPORTANT_INFO_HEADER =
-    "✅ Image API key was added — please fill it in Kavita Settings."
+    "📦 This app's package ID changed — it now installs separately from any older Inkita app."
 
-private val IMPORTANT_INFO_ADDED =
-    listOf(
-        "Downloads V2: default Download API strategy for series/volume/chapter archives",
-        "Downloads V2: fallback DownloadApiStrategyV2 for unsupported formats",
-        "Downloads V2: normalized on-disk layout for series/volumes/chapters/specials",
-        "Downloads V2: image/archive chapter downloads stored as CBZ",
-        "Downloads V2: PDF downloads now show in the queue",
-        "Downloads V2: centralized download state for series/volume/chapter badges",
-        "Downloads V2: queue items show series/volume/chapter labels",
-        "Library/Browse: download badges on series covers",
-        "Settings: toggle to show/hide download badges",
-        "Settings: download stats dialog",
-        "Series Detail V2: tree view of downloaded files",
-        "Reader: offline Image/Archive reading from downloaded CBZ",
-        "Reader: basic Image/Archive reader (image pages + swipe)",
-        "Reader: image reader modes (LTR/RTL/Vertical)",
-        "Reader: PDF temp files cleaned on exit/startup unless downloaded",
-        "Series Detail V2: chapters list swipe read/unread + download",
-        "Series Detail V2: tap genre/tag to open Browse with filter",
-        "Series Detail V2: collection click opens Library V2 collection",
-    )
+private val IMPORTANT_INFO_ADDED = emptyList<String>()
 
 private val IMPORTANT_INFO_CHANGED =
     listOf(
-        "Downloads V2: PDF items open with correct MIME type",
-        "Downloads V2: queue/completed rows wrap titles cleanly",
-        "Reader: EpubReaderViewModel/PdfReaderViewModel split into separate files",
-        "Reader: navigation jumps across chapters at edges",
-        "Reader: next chapter prompts to mark current as read when leaving early",
-        "Reader: image/archive routing preserves format id",
-        "UI: rounded corners aligned across Library/Series/Volume covers",
-        "Series Detail: legacy screen/viewmodel removed",
-        "Downloads: legacy V1 download manager/DB removed",
-        "Library: legacy screen/viewmodel and cache APIs removed",
+        "App renamed to Inkikak with a new applicationId (net.kaktusmann.inkita) and a blue launcher icon, per upstream's fork guidelines",
+        "Debug builds now install as a separate app (net.kaktusmann.inkita.debug) alongside release/preview builds",
     )
 
 private val IMPORTANT_INFO_FIXED =
     listOf(
-        "Series Detail V2 cache defaults to enabled to prevent offline cache misses",
-        "History list no longer crashes due to duplicate LazyColumn keys",
-        "Bottom bar stays visible when opening Library/Browse via filters",
+        "Reader: Fixed scroll-position tracking always resolving to the top of the chapter, causing progress to reset when resuming in the app",
+        "Reader: Progress writes to the server now correctly report failure instead of silently swallowing rejected requests",
+        "Settings: Fixed a crash when opening the About screen while an update download was pending",
+        "Settings: Fixed the update checker always reporting up to date due to a broken version-parsing regex",
     )
 
 private const val FORCE_SHOW_IMPORTANT_INFO = false
@@ -347,21 +320,27 @@ fun InkitaApp(
                                 text = "📌 ${pkg.versionName}",
                                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                             )
-                            Spacer(modifier = Modifier.size(8.dp))
-                            InfoSection(
-                                title = "✨ Added",
-                                items = IMPORTANT_INFO_ADDED,
-                            )
-                            Spacer(modifier = Modifier.size(10.dp))
-                            InfoSection(
-                                title = "🔁 Changed",
-                                items = IMPORTANT_INFO_CHANGED,
-                            )
-                            Spacer(modifier = Modifier.size(10.dp))
-                            InfoSection(
-                                title = "🛠️ Fixed",
-                                items = IMPORTANT_INFO_FIXED,
-                            )
+                            if (IMPORTANT_INFO_ADDED.isNotEmpty()) {
+                                Spacer(modifier = Modifier.size(8.dp))
+                                InfoSection(
+                                    title = "✨ Added",
+                                    items = IMPORTANT_INFO_ADDED,
+                                )
+                            }
+                            if (IMPORTANT_INFO_CHANGED.isNotEmpty()) {
+                                Spacer(modifier = Modifier.size(10.dp))
+                                InfoSection(
+                                    title = "🔁 Changed",
+                                    items = IMPORTANT_INFO_CHANGED,
+                                )
+                            }
+                            if (IMPORTANT_INFO_FIXED.isNotEmpty()) {
+                                Spacer(modifier = Modifier.size(10.dp))
+                                InfoSection(
+                                    title = "🛠️ Fixed",
+                                    items = IMPORTANT_INFO_FIXED,
+                                )
+                            }
                         }
                     }
                 },
