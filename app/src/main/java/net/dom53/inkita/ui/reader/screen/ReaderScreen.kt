@@ -1169,11 +1169,11 @@ internal fun ReaderWebView(
             """
         (function() {
             function xpathFor(el) {
+                if (el.id) return 'id("' + el.id + '")';
                 var root = (document.body.children && document.body.children.length > 0) ? document.body.children[0] : document.body;
                 var parts = [];
                 var node = el;
                 while (node && node.nodeType === 1) {
-                    if (node.id) return 'id("' + node.id + '")';
                     if (node === root) {
                         return parts.length ? '//body/' + parts.join('/') : '//body';
                     }
