@@ -1,7 +1,7 @@
 {
   "channel": "stable",
-  "version": "0.4.1",
-  "versionCode": 11,
-  "url": "https://github.com/Kaktusmann/Inkita/releases/download/v0.4.1/inkita-universal-v0.4.1.apk",
-  "sha256": "cf45ee0d5e9d818311bfb406af3e23e61f0015111f53e8fc8b1aa617eb07246e"
+  "version": "0.4.2",
+  "versionCode": 12,
+  "url": "https://github.com/Kaktusmann/Inkita/releases/download/v0.4.2/inkita-universal-v0.4.2.apk",
+  "sha256": "483f679580c138e1cdd0c7fb9fb7cf35257782897e01c497a2b4e84491ebc36c"
 }
