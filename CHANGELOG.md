@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented here.
 
+## v0.6.1
+
+### Fixed
+- Reader: Fixed EPUB pages consisting only of an image (cover-less title pages, character galleries, copyright/TOC pages) rendering blank when the source image carried its own inline `height: 100%` style — the reader's scale-to-width CSS now takes precedence over such inline styles instead of being silently overridden by them.
+
 ## v0.6.0
 
 ### Added

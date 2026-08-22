@@ -1140,8 +1140,8 @@ internal fun ReaderWebView(
         $themeCss
         .kavita-scale-width, .kavita-scale-width img,
         .cover_image img, .image_full img, .pc img {
-            max-width: 100%;
-            height: auto;
+            max-width: 100% !important;
+            height: auto !important;
             display: block;
             margin: 0 auto;
         }
