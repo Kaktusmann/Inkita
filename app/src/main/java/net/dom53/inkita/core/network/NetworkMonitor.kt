@@ -129,8 +129,19 @@ class NetworkMonitor private constructor(
     }
 
     private fun snapshot(caps: NetworkCapabilities? = null): NetworkStatus {
+        val active = caps ?: cm?.activeNetwork?.let { net -> cm.getNetworkCapabilities(net) }
+        // The system's "active" network can be a Wi-Fi radio that's enabled but not actually
+        // validated (e.g. associated with a saved SSID that has no internet), even while another
+        // network such as cellular is fully usable. Fall back to scanning all known networks for
+        // one that's actually validated rather than reporting offline in that case.
         val capabilities =
-            caps ?: cm?.activeNetwork?.let { net -> cm.getNetworkCapabilities(net) }
+            active?.takeIf { it.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) }
+                ?: cm
+                    ?.allNetworks
+                    ?.asSequence()
+                    ?.mapNotNull { net -> cm.getNetworkCapabilities(net) }
+                    ?.firstOrNull { it.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) }
+                ?: active
                 ?: return NetworkStatus(false, ConnectionType.None, true, false, offlineMode = false)
         val hasInternet =
             capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&

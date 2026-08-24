@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented here.
 
+## v0.6.2
+
+### Fixed
+- Networking: Fixed the app incorrectly reporting fully offline (and blocking library refresh/sync) when Wi-Fi was enabled but not actually connected to a working network, even though mobile data was online. Connectivity checks now fall back to any validated network (e.g. cellular) instead of trusting an unvalidated Wi-Fi radio as the active connection.
+
 ## v0.6.1
 
 ### Fixed
