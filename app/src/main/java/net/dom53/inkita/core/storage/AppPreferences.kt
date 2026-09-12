@@ -45,6 +45,7 @@ data class ReaderPrefs(
     val imageReaderMode: ImageReaderMode = ImageReaderMode.LeftToRight,
     val imagePrefetchPages: Int = 8,
     val tapZonesEnabled: Boolean = false,
+    val swipeEnabled: Boolean = true,
 ) {
     companion object {
         const val DEFAULT_FONT_FAMILY = "literata"
@@ -77,6 +78,7 @@ class AppPreferences(
         private val KEY_IMAGE_READER_MODE = stringPreferencesKey("image_reader_mode")
         private val KEY_IMAGE_PREFETCH_PAGES = intPreferencesKey("image_prefetch_pages")
         private val KEY_TAP_ZONES_ENABLED = booleanPreferencesKey("reader_tap_zones_enabled")
+        private val KEY_SWIPE_ENABLED = booleanPreferencesKey("reader_swipe_enabled")
 
         private val KEY_APP_LANGUAGE = stringPreferencesKey("app_language")
         private val KEY_APP_THEME = stringPreferencesKey("app_theme")
@@ -161,6 +163,7 @@ class AppPreferences(
                 imageReaderMode = prefs.toImageReaderMode(),
                 imagePrefetchPages = prefs[KEY_IMAGE_PREFETCH_PAGES] ?: ReaderPrefs.DEFAULT_IMAGE_PREFETCH_PAGES,
                 tapZonesEnabled = prefs[KEY_TAP_ZONES_ENABLED] ?: false,
+                swipeEnabled = prefs[KEY_SWIPE_ENABLED] ?: true,
             )
         }
 
@@ -358,6 +361,7 @@ class AppPreferences(
                     imageReaderMode = prefs.toImageReaderMode(),
                     imagePrefetchPages = prefs[KEY_IMAGE_PREFETCH_PAGES] ?: ReaderPrefs.DEFAULT_IMAGE_PREFETCH_PAGES,
                     tapZonesEnabled = prefs[KEY_TAP_ZONES_ENABLED] ?: false,
+                    swipeEnabled = prefs[KEY_SWIPE_ENABLED] ?: true,
                 )
             val next = current.transform()
             prefs[KEY_FONT_SIZE] = next.fontSize
@@ -370,6 +374,7 @@ class AppPreferences(
             prefs[KEY_IMAGE_READER_MODE] = encodeImageReaderMode(next.imageReaderMode)
             prefs[KEY_IMAGE_PREFETCH_PAGES] = next.imagePrefetchPages.coerceAtLeast(0)
             prefs[KEY_TAP_ZONES_ENABLED] = next.tapZonesEnabled
+            prefs[KEY_SWIPE_ENABLED] = next.swipeEnabled
         }
     }
 

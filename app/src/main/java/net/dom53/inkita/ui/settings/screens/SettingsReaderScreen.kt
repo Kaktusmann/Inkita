@@ -81,6 +81,7 @@ fun SettingsReaderScreen(
     var imagePrefetchPages by remember { mutableStateOf(prefs.imagePrefetchPages) }
     var showImagePrefetchDialog by remember { mutableStateOf(false) }
     var tapZonesEnabled by remember { mutableStateOf(prefs.tapZonesEnabled) }
+    var swipeEnabled by remember { mutableStateOf(prefs.swipeEnabled) }
 
     LaunchedEffect(prefs) {
         fontSize = prefs.fontSize
@@ -92,6 +93,7 @@ fun SettingsReaderScreen(
         imageReaderMode = prefs.imageReaderMode
         imagePrefetchPages = prefs.imagePrefetchPages
         tapZonesEnabled = prefs.tapZonesEnabled
+        swipeEnabled = prefs.swipeEnabled
     }
 
     Column(
@@ -115,6 +117,13 @@ fun SettingsReaderScreen(
             onCheckedChange = { checked ->
                 tapZonesEnabled = checked
                 scope.launch { appPreferences.updateReaderPrefs { copy(tapZonesEnabled = checked) } }
+            },
+        )
+        SwipeToTurnPagesRow(
+            enabled = swipeEnabled,
+            onCheckedChange = { checked ->
+                swipeEnabled = checked
+                scope.launch { appPreferences.updateReaderPrefs { copy(swipeEnabled = checked) } }
             },
         )
         HorizontalDivider()
@@ -321,6 +330,31 @@ private fun TapZonesRow(
             Text(stringResource(R.string.reader_tap_zones), style = MaterialTheme.typography.bodyLarge)
             Text(
                 text = stringResource(R.string.reader_tap_zones_subtitle),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(checked = enabled, onCheckedChange = onCheckedChange)
+    }
+}
+
+@Composable
+private fun SwipeToTurnPagesRow(
+    enabled: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(stringResource(R.string.reader_swipe_to_turn_pages), style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = stringResource(R.string.reader_swipe_to_turn_pages_subtitle),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

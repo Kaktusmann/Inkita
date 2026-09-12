@@ -46,7 +46,8 @@ object ImageReader : BaseReader {
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .pointerInput(params.uiState.pageIndex) {
+                    .pointerInput(params.uiState.pageIndex, params.swipeEnabled) {
+                        if (!params.swipeEnabled) return@pointerInput
                         var totalDrag = 0f
                         if (isVertical) {
                             detectVerticalDragGestures(

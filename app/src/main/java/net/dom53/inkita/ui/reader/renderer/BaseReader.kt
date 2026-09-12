@@ -33,6 +33,7 @@ data class ReaderRenderParams(
     val pendingScrollId: String?,
     val imageReaderMode: ImageReaderMode,
     val tapZonesEnabled: Boolean,
+    val swipeEnabled: Boolean,
 )
 
 data class ReaderRenderCallbacks(

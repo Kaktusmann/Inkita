@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented here.
 
+## v0.7.0
+
+### Added
+- Reader: Added a "swipe to turn pages" toggle (Settings → Reader) for EPUB and image readers, so swipe gestures can be disabled independently of tap-to-turn zones.
+
 ## v0.6.2
 
 ### Fixed

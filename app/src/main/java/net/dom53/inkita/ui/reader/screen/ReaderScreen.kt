@@ -347,6 +347,7 @@ internal fun BaseReaderScreen(
                     pendingScrollId = uiState.bookScrollId,
                     imageReaderMode = readerPrefs.imageReaderMode,
                     tapZonesEnabled = readerPrefs.tapZonesEnabled,
+                    swipeEnabled = readerPrefs.swipeEnabled,
                 ),
             callbacks =
                 ReaderRenderCallbacks(
@@ -1076,6 +1077,7 @@ private fun pageText(
     }
 }
 
+@Suppress("LongParameterList")
 @Composable
 internal fun ReaderWebView(
     html: String,
@@ -1097,6 +1099,7 @@ internal fun ReaderWebView(
     onConsumeScrollId: () -> Unit = {},
     onScrollIdle: (String?) -> Unit = {},
     tapZonesEnabled: Boolean = false,
+    swipeEnabled: Boolean = true,
 ) {
     if (html.isBlank()) return
     var lastLoadedHash by remember { mutableStateOf<String?>(null) }
@@ -1253,7 +1256,7 @@ internal fun ReaderWebView(
                             velocityX: Float,
                             velocityY: Float,
                         ): Boolean {
-                            if (e1 == null) return false
+                            if (!swipeEnabled || e1 == null) return false
                             val diffX = e2.x - e1.x
                             val diffY = e2.y - e1.y
                             if (abs(diffX) > abs(diffY) &&
